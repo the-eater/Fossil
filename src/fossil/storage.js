@@ -87,6 +87,17 @@ export class FossilOmemoStorage extends OmemoStorage {
     this.store = new FossilNamespacedStore('omemo/', store);
   }
 
+  async getDeviceIds(jid) {
+    return new Set(this.store.get(`contact/${jid}/device-ids`));
+  }
+
+  async hasDeviceIds(jid) {
+    return this.store.has(`contact/${jid}/device-ids`);
+  }
+
+  async storeDeviceIds(jid, deviceIds) {
+    this.store.set(`contact/${jid}/device-ids`, Array.from(deviceIds));
+  }
 
   async storeWhisper(address, id, whisper) {
      this.store.set(`whisper/${address}/${id}`, OmemoUtils.arrayBufferToBase64String(whisper));

@@ -1,4 +1,5 @@
 import {FossilTimeline} from "./timeline";
+import * as uuid from 'uuid/v4';
 
 export class FossilContact {
   constructor({jid, connection, item, onState, storage, owner}) {
@@ -22,13 +23,47 @@ export class FossilContact {
     this.timeline.boot();
   }
 
-  send(text) {
+  async send(text) {
+    if (this.omemoEnabled) {
+      const id = uuid();
+
+      await this.client.omemo.sendMessage({
+        id,
+        to: this.jid,
+        from: this.client.jid,
+        body: text,
+        type: 'chat',
+      });
+
+      this.timeline.updateMessage(id, {
+        encrypted: true,
+        body: text
+      });
+      return;
+    }
+
     this.client.sendMessage({
       to: this.jid,
       from: this.client.jid,
       body: text,
       type: 'chat',
     });
+  }
+
+  async toggleOmemo() {
+    if (this.omemoEnabled) {
+      this.omemoEnabled = false;
+      this.storage.setContactOmemoEnabled(this.jid.bare, false);
+      this.onState();
+    }
+
+    const ids = await this.client.omemo.getAnnouncedDeviceIds(this.jid.bare);
+
+    if (ids.size > 0) {
+      this.omemoEnabled = true;
+      this.storage.setContactOmemoEnabled(this.jid.bare, true);
+      this.onState();
+    }
   }
 
   getTimelineItems() {
@@ -48,7 +83,7 @@ export class FossilContact {
     let avatar;
 
     if (this.vcard) {
-       avatar = this.vcard.getAvatarUri();
+      avatar = this.vcard.getAvatarUri();
     }
 
     if (!avatar) {

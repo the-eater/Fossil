@@ -8,6 +8,7 @@ export class FossilTimeline {
     this.storage = storage;
     this.client = connection;
     this.items = storage.getTimelineItems(this.jid);
+    this.updateMap = new Map();
     this.reindexItems();
 
   }
@@ -75,6 +76,11 @@ export class FossilTimeline {
       body: message.body,
     });
 
+    if (this.updateMap.has(message.id)) {
+      Object.assign(message, this.updateMap.get(message.id));
+      this.updateMap.delete(message.id);
+    }
+
     this.itemsById.set(message.id, messageObj);
     this.items.push(messageObj);
 
@@ -87,5 +93,16 @@ export class FossilTimeline {
     });
 
     this.onState();
+  }
+
+  async updateMessage(id, obj) {
+    if (!this.itemsById.has(id)) {
+      this.updateMap.set(id, obj);
+    }
+
+    const item = this.itemsById.get(id);
+    Object.assign(item, obj);
+    this.onState();
+    this.storage.setTimelineItems(this.jid, this.items);
   }
 }

@@ -13,7 +13,7 @@ export class Composer extends Component {
 
   onTextInput(e) {
     if (e.keyCode === 13 && !e.shiftKey) {
-      this.chat.sendMessage(this.textInput.value);
+      this.chat.send(this.textInput.value);
       this.textInput.value = "";
     }
   }
@@ -22,10 +22,11 @@ export class Composer extends Component {
     return (
       <div className="composer">
         <div className="text-input">
-          <input onInput={this.onTextInput.bind(this)} ref={a => this.textInput = a} type="text"/>
+          <input onKeyDown={this.onTextInput.bind(this)} ref={a => this.textInput = a} type="text"/>
         </div>
         <div onMouseEnter={() => this.setState({hoverEncryption: true})}
              onMouseLeave={() => this.setState({hoverEncryption: false})}
+             onClick={() => this.chat.toggleOmemo()}
              className="encryption-switch">
           {this.chat.omemoEnabled !== this.state.hoverEncryption ? (
             <FontAwesomeIcon icon='lock'/>

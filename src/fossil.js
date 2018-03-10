@@ -25,6 +25,9 @@ export class Fossil {
     this.booted = false;
     this._loggedIn = false;
     this.activeContact = null;
+    this.windowState = {
+      seeChat: false,
+    };
   }
 
   get loggedIn() {
@@ -106,6 +109,7 @@ export class Fossil {
   activateContact(jid) {
     this.activeContact = this.findContact(jid);
     this.storage.setActiveContact(jid);
+    this.windowState.seeChat = true;
     this.onState(this);
   }
 }

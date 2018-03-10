@@ -105,7 +105,7 @@ html, #root {
   flex-grow: 1;
 }
 
-.composer input {
+.text-input input {
   margin: 0;
   border: 0;
   width: 100%;
@@ -145,4 +145,70 @@ html, #root {
 
 .message .sec-icon {
   margin-left: 5px;
+}
+
+.composer {
+  display: flex;
+  background-color: #373737;
+}
+
+.text-input {
+  flex-grow: 1;
+}
+
+.encryption-switch {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 30px;
+  cursor: pointer;
+}
+
+.chat-state {
+  display: flex;
+  width: 100%;
+  height: 100%;
+}
+
+.top-bar {
+  height: 100px;
+  background-color: #373737;
+  display: flex;
+}
+
+.top-bar > .name {
+  display: flex;
+  align-items: center;
+  flex-grow: 1;
+}
+
+.menu-button {
+  display: none;
+  padding: 10px;
+  font-size: 25px;
+}
+
+@media screen and (max-width: 800px) {
+  .app {
+    display: block;
+  }
+
+  .menu-button {
+    display: block;
+  }
+
+  .chat-state {
+    width: 200%;
+    display: block;
+    position: relative;
+  }
+
+  .chat-state > * {
+    width: 50%;
+    float: left;
+  }
+
+  .chat-state.see-chat {
+    left: -100%;
+  }
 }

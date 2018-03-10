@@ -25,13 +25,13 @@ class App extends Component {
     if (this.fossil.loggedIn) {
       const ac = this.fossil.activeContact;
       return (
-        <Fragment>
+        <div className={"chat-state" + (this.fossil.windowState.seeChat ? ' see-chat' : '')}>
           <ContactList onSelect={(jid) => this.fossil.activateContact(jid)} roster={this.state.roster}
                        active={ac ? ac.jid : null}/>
           <div className="window">
-            {ac ? <Chat key={ac.jid.toString()} owner={this.fossil.jid} contact={ac}/> : null}
+            {ac ? <Chat key={ac.jid.toString()} owner={this.fossil.jid} fossil={this.fossil} contact={ac}/> : null}
           </div>
-        </Fragment>
+        </div>
       )
     } else {
       return <Login fossil={this.fossil} />

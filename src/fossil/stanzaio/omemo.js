@@ -121,6 +121,14 @@ export class OmemoStorage {
     RECEIVING: 2,
   };
 
+  storeDeviceIds(jid, deviceIds) {
+    notImplemented();
+  }
+
+  getDeviceIds(jid) {
+    notImplemented();
+  }
+
   storeWhisper(address, id, whisper) {
     notImplemented();
   }
@@ -232,6 +240,25 @@ export class OmemoClient {
   constructor({client, store = new OmemoStorage()}) {
     this.client = client;
     this.store = store;
+    this.subscriptions = new Set();
+
+    this.client.on('pubsub:event', (event) => this.handleDeviceList(event));
+  }
+
+  async handleDeviceList(msg) {
+    console.log(msg);
+    if (!msg.event.updated) {
+      // Ignore node purge/deletion/etc events.
+      return;
+    }
+
+    if (msg.event.updated.node !== 'eu.siacs.conversations.axolotl.devicelist') {
+      // We only want the event for a specific node.
+      return;
+    }
+
+    const devices = new Set(msg.event.updated.published[0].deviceList.devices);
+    await this.store.storeDeviceIds(new JID(msg.from).bare, devices);
   }
 
   async start() {
@@ -265,6 +292,18 @@ export class OmemoClient {
       jid = jid.bare;
     }
 
+    if (!this.subscriptions.has(jid)) {
+      try {
+        await this.client.subscribeToNode(jid, 'eu.siacs.conversations.axolotl.devicelist');
+      } catch (e) {
+      }
+      this.subscriptions.add(jid);
+    }
+
+    if (await this.store.hasDeviceIds(jid)) {
+      return await this.store.getDeviceIds(jid);
+    }
+
     let deviceList;
     try {
       deviceList = await this.client.getItems(jid, 'eu.siacs.conversations.axolotl.devicelist');
@@ -277,10 +316,14 @@ export class OmemoClient {
     try {
       deviceIds = deviceList.pubsub.retrieve.item.deviceList.devices;
     } catch (e) {
-      console.log(deviceList)
     }
 
-    return new Set(deviceIds.map((a) => parseInt(a, 10)));
+
+
+    const ids = new Set(deviceIds.map((a) => parseInt(a, 10)));
+
+    await this.store.storeDeviceIds(jid, ids);
+    return ids;
   }
 
   async getDeviceKeyBundle(recipient, registrationId) {
@@ -517,8 +560,9 @@ export class OmemoClient {
     }
   };
 
-  async sendMessage({to, from, body, type = 'chat'}) {
+  async sendMessage({id = undefined, to, from, body, type = 'chat'}) {
     return await this.client.sendMessage({
+      id,
       to,
       from,
       type,
