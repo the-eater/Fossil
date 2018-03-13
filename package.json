@@ -2,6 +2,7 @@
   "name": "fossil",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://the-eater.github.io/Fossil",
   "dependencies": {
     "@fortawesome/fontawesome": "^1.1.4",
     "@fortawesome/react-fontawesome": "^0.0.17",
@@ -14,9 +15,14 @@
     "strophejs-plugin-vcard": "^0.0.1"
   },
   "scripts": {
+      "predeploy": "npm run build",
+      "deploy": "gh-pages -d build",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
+  },
+  "devDependencies": {
+    "gh-pages": "^1.1.0"
   }
 }
