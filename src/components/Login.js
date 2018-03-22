@@ -12,11 +12,20 @@ export class Login extends Component {
     }
   }
 
+  static knownMap = {
+    'kode.im': {
+      transport: 'bosh',
+      boshURL: 'https://im.koderoot.net/http-bind'
+    }
+  };
+
   onClick() {
     const connectObj = {
       jid: this.username.value,
       password: this.password.value,
     };
+
+    this.fossil.setResource(this.resource.value);
 
     if (this.transport.value !== '') {
       connectObj.transport = this.transport.value;
@@ -27,16 +36,30 @@ export class Login extends Component {
       }
     }
 
-    let done = false;
-    this.fossil.client.on('auth:success', () => {
-      done = true;
+    const jid = new JID(this.username.value);
+    if (jid.domain in Login.knownMap) {
+      Object.assign(connectObj, Login.knownMap[jid.domain]);
+    }
+
+    this.fossil.client.once('auth:success', () => {
       this.fossil.storage.setUser(connectObj);
     });
 
-    this.fossil.client.on('auth:failed', () => {
-      done = true;
+    this.fossil.client.once('auth:failed', () => {
       this.setState({
         errorMessage: 'Username or password are invalid',
+      });
+    });
+
+    this.fossil.client.once('session:error', (e) => {
+      this.setState({
+        errorMessage: `Failed to connect to server: ${e.message}`,
+      });
+    });
+
+    this.fossil.client.once('disconnected', () => {
+      this.setState({
+        errorMessage: `Failed to connect to server: No details known`,
       });
     });
 
@@ -52,6 +75,8 @@ export class Login extends Component {
           {this.state.errorMessage !== null ? <div className="error">{this.state.errorMessage}</div> : <Fragment />}
           <input ref={a => this.username = a} className="item" type="text" placeholder="Username"/>
           <input ref={a => this.password = a} className="item" type="password" placeholder="Password"/>
+
+          <input ref={a => this.resource = a} className="item" type="text" placeholder="Name of device"/>
           <div
             onClick={() => this.setState({advancedCollapsed: !this.state.advancedCollapsed})}>{this.state.advancedCollapsed ? '-' : '+'} Advanced
           </div>

@@ -1,4 +1,4 @@
-import React, {Component, Fragment} from 'react';
+import React, {Component} from 'react';
 import './App.css';
 import {ContactList} from "./components/ContactList";
 import {Fossil} from "./fossil";
@@ -18,7 +18,7 @@ class App extends Component {
   componentDidMount() {
     this.fossil.start();
 
-    this.timeUpdate = setInterval(() => this.setState(this.fossil), 2000);
+    // this.timeUpdate = setInterval(() => this.setState(this.fossil), 2000);
   }
 
   getWindow() {
@@ -34,7 +34,7 @@ class App extends Component {
         </div>
       )
     } else {
-      return <Login fossil={this.fossil} />
+      return <Login fossil={this.fossil}/>
     }
   }
 

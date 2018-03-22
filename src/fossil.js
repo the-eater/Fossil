@@ -5,8 +5,6 @@ import {FossilRoster} from "./fossil/roster";
 import {FossilOmemoStorage, FossilStorage} from "./fossil/storage";
 
 export class Fossil {
-  static SERVICE_URL = 'https://im.koderoot.net/http-bind';
-
   constructor({onState, storage = new FossilStorage()}) {
     window.fossil = this;
 
@@ -39,15 +37,24 @@ export class Fossil {
     this.onState(this);
   }
 
+  setResource(resource) {
+    this.storage.setResource(resource);
+    this.createClient();
+  }
+
   createClient() {
+    if (this.client) {
+      this.client.disconnect();
+    }
+
     this.client = XMPP.createClient({
-      resource: 'fossil',
       useStreamManagement: true,
       softwareVersion: {
         name: 'Fossil',
         version: 'v0.1.0',
-        os: window.userAgent,
-      }
+        os: 'Web',
+      },
+      resource: this.storage.getResource(),
     });
 
     this.client.use(OMEMO);

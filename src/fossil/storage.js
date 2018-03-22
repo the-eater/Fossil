@@ -23,6 +23,16 @@ export class FossilStorage {
     this.store.set(`user`, copy);
   }
 
+  getResource() {
+    const result = this.store.get('resource', `fossil/${("000" + Math.floor(Math.random() * 65536).toString(16)).substr(-4).toUpperCase()}`);
+    this.store.set('resource', result);
+    return result;
+  }
+
+  setResource(resource) {
+    this.store.set('resource', resource);
+  }
+
   getTimelineItems(jid) {
     return this.store.get(`contact/${jid}/timeline/items`, []);
   }
