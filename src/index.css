@@ -171,7 +171,8 @@ html, #root {
 }
 
 .top-bar {
-  height: 100px;
+  padding: 5px;
+  flex-grow: 0;
   background-color: #373737;
   display: flex;
 }
@@ -186,6 +187,14 @@ html, #root {
   display: none;
   padding: 10px;
   font-size: 25px;
+}
+
+.login-page .error {
+  width: 300px;
+  padding: 5px;
+  margin: 3px;
+  color: black;
+  background-color: #d81a21;
 }
 
 @media screen and (max-width: 800px) {
