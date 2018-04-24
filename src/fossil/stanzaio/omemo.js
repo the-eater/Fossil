@@ -461,19 +461,27 @@ export class OmemoClient {
 
         const preKey = keyBundle.preKeys[Math.floor(Math.random() * keyBundle.preKeys.length)];
 
-        console.info(`Processing PreKey[${preKey.id}]`, await sessionBuilder.processPreKey({
-          registrationId: deviceId,
-          identityKey: OmemoUtils.base64StringToArrayBuffer(keyBundle.identityKey),
-          signedPreKey: {
-            keyId: parseInt(keyBundle.signedPreKeyPublic.id, 10),
-            publicKey: OmemoUtils.base64StringToArrayBuffer(keyBundle.signedPreKeyPublic.content),
-            signature: OmemoUtils.base64StringToArrayBuffer(keyBundle.signedPreKeySignature)
-          },
-          preKey: {
-            keyId: parseInt(preKey.id, 10),
-            publicKey: OmemoUtils.base64StringToArrayBuffer(preKey.content),
-          }
-        }));
+        console.info(`Trying to process PreKey[${recipientBareJid}:${preKey.id}]`);
+
+        try {
+          await sessionBuilder.processPreKey({
+            registrationId: deviceId,
+            identityKey: OmemoUtils.base64StringToArrayBuffer(keyBundle.identityKey),
+            signedPreKey: {
+              keyId: parseInt(keyBundle.signedPreKeyPublic.id, 10),
+              publicKey: OmemoUtils.base64StringToArrayBuffer(keyBundle.signedPreKeyPublic.content),
+              signature: OmemoUtils.base64StringToArrayBuffer(keyBundle.signedPreKeySignature)
+            },
+            preKey: {
+              keyId: parseInt(preKey.id, 10),
+              publicKey: OmemoUtils.base64StringToArrayBuffer(preKey.content),
+            }
+          });
+        } catch (e) {
+          console.log(`Failed processing PreKey[${recipientBareJid}:${preKey.id}]`)
+          // Don't add failed session cipher to sessions
+          continue;
+        }
       }
 
       sessions.push(new SessionCipher(this.store, address));
