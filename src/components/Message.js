@@ -21,7 +21,7 @@ export class Message extends Component {
         </div>
         <div className="status">
           {moment(messageObj.date).fromNow()}
-          <FontAwesomeIcon icon={messageObj.encrypted ? 'lock' : 'lock-open'} className="sec-icon"/>
+          <FontAwesomeIcon icon={messageObj.encrypted ? 'lock' : 'lock-open'} className={"sec-icon " + (messageObj.encrypted ? 'safe' : '')}/>
         </div>
       </div>
     </div>

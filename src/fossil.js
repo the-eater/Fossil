@@ -67,6 +67,7 @@ export class Fossil {
     this.client.on('message', (chat) => this.handleMessage(chat));
     this.client.on('carbon:sent', (carbon) => this.handleMessage(carbon.carbonSent.forwarded.message));
     this.client.on('message:sent', (message) => this.handleMessage(message));
+    this.client.on('roster:update', ev => this.roster.update(ev.roster));
   }
 
   handleMessage(chat) {

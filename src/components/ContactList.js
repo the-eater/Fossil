@@ -16,9 +16,10 @@ export class ContactList extends Component {
     let contacts = this.props.roster.getContacts();
 
     if (this.props.filter) {
-
       contacts = this.props.roster.search(this.props.filter);
     }
+
+    contacts = contacts.filter(a => a.inRoster);
 
     return <div className="contact-list">
       {contacts.length > 0 ?

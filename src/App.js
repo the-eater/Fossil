@@ -35,8 +35,9 @@ class App extends Component {
   getWindow() {
     if (this.fossil.loggedIn) {
       const ac = this.fossil.activeContact;
+
       return (
-        <div className={"chat-state" + (this.fossil.windowState.seeChat ? ' see-chat' : '')}>
+        <div className={"chat-state" + (this.fossil.windowState.seeChat && ac ? ' see-chat' : '')}>
           <ConversationList fossil={this.fossil} onSelect={(jid) => this.activateConversation(jid)} conversations={this.state.conversations}
                        active={ac ? ac.jid : null}/>
           <div className="window">

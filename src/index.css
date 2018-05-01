@@ -38,12 +38,12 @@ html, #root {
 
 .contact.active,
 .conversation.active {
-  background-color: #DDD;
+  background-color: #444;
 }
 
 .contact:hover,
 .conversation:hover {
-  background-color: #EEE;
+  background-color: #555;
   cursor: pointer;
 }
 
@@ -253,7 +253,7 @@ html, #root {
 }
 
 .quick-search > input {
-  width: 330px;
+  width: 320px;
   background-color: #373737;
   border: none;
   font-size: 15px;
@@ -278,12 +278,12 @@ html, #root {
   justify-content: start;
   align-items: center;
   flex-direction: column;
-  min-height: 75px;
+  min-height: 70px;
 }
 
 .contact-list .no-contacts {
   color:  #7e6427;
-  height: 75px;
+  height: 70px;
   display: flex;
   align-items: center;
 }
@@ -304,7 +304,7 @@ html, #root {
 
 .new-convo-modal .quick-add:hover,
 .new-conversation:hover {
-  background-color: #222222;
+  background-color: #555;
   cursor: pointer;
 }
 
@@ -317,6 +317,39 @@ html, #root {
   height: 50px;
   align-items: center;
   justify-content: center;
+}
+
+.chat-window .roster-management {
+  background-color: #222222;
+  color: grey;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+}
+
+.chat-window .roster-management .buttons {
+  display: grid;
+  background-color: #373737;
+  grid-column-gap: 1px;
+}
+
+.chat-window .roster-management .buttons > * {
+  cursor: pointer;
+  background-color: #222222;
+  text-align: center;
+  padding: 10px;
+}
+
+.chat-window .roster-management .buttons > *:hover {
+  background-color: #444;
+}
+
+.chat-window .roster-management label {
+  padding: 10px;
+}
+
+.chat-window .roster-management .buttons .block {
+  grid-column: 2;
 }
 
 @media screen and (max-width: 800px) {

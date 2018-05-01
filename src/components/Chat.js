@@ -31,6 +31,16 @@ export class Chat extends Component {
     this.fossil.onState(this.fossil);
   }
 
+  async addContact() {
+    await this.fossil.client.acceptSubscription(this.contact.jid);
+    await this.fossil.client.subscribe(this.contact.jid);
+
+  }
+
+  async blockContact() {
+    this.fossil.client.block(this.contact.jid);
+  }
+
   render() {
     return <div className="chat-window">
       <div className="top-bar">
@@ -51,6 +61,19 @@ export class Chat extends Component {
             return <Message isSelf={messageJid.bare === this.props.owner.bare} key={message.id} message={message}/>
           })}
       </div>
+      { this.contact.inRoster ? null : (
+        <div className="roster-management">
+          <label>{this.contact.jid.bare} is not in your contact list</label>
+          <div className="buttons">
+            <div onClick={() => this.addContact()} className="add">
+              Add
+            </div>
+            <div onClick={() => this.blockContact()} className="block">
+              Block
+            </div>
+          </div>
+        </div>
+      ) }
       <Composer fossil={this.fossil} chat={this.contact}/>
     </div>
   }

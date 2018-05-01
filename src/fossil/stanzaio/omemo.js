@@ -246,7 +246,6 @@ export class OmemoClient {
   }
 
   async handleDeviceList(msg) {
-    console.log(msg);
     if (!msg.event.updated) {
       // Ignore node purge/deletion/etc events.
       return;
@@ -317,8 +316,6 @@ export class OmemoClient {
       deviceIds = deviceList.pubsub.retrieve.item.deviceList.devices;
     } catch (e) {
     }
-
-
 
     const ids = new Set(deviceIds.map((a) => parseInt(a, 10)));
 
@@ -421,7 +418,16 @@ export class OmemoClient {
     }
 
     if (!keyBundle.signedPreKeyPublic.id) {
-      const {keyPair, signature, keyId} = await KeyHelper.generateSignedPreKey(identityPair, Math.floor(Math.random() * 235234));
+      let preKeyId;
+      if (window.crypto && window.crypto.getRandomValues) {
+        const keySpawn = new Uint16Array(1);
+        window.crypto.getRandomValues(keySpawn);
+        preKeyId = keySpawn[0];
+      } else {
+        preKeyId = Math.floor(Math.random() * (1 << 16));
+      }
+
+      const {keyPair, signature, keyId} = await KeyHelper.generateSignedPreKey(identityPair, preKeyId);
       await this.store.storeSignedPreKey(keyId, keyPair);
 
       keyBundle.signedPreKeySignature = OmemoUtils.arrayBufferToBase64String(signature);
@@ -441,12 +447,10 @@ export class OmemoClient {
   async getRecipientSessions(recipient) {
     const recipientBareJid = (new JID(recipient)).bare;
     const deviceIds = await this.getAnnouncedDeviceIds(recipient);
-    const sessions = [];
     const ownDeviceId = await this.store.getLocalRegistrationId();
-
-    for (const deviceId of deviceIds) {
+    const fetches = Array.from(deviceIds).map(async deviceId => {
       if (`${ownDeviceId}` === `${deviceId}`) {
-        continue;
+        return null;
       }
 
       const address = new OmemoAddress(recipientBareJid, deviceId);
@@ -454,7 +458,7 @@ export class OmemoClient {
       if (session === undefined) {
         const keyBundle = await this.getDeviceKeyBundle(recipientBareJid, deviceId);
         if (!keyBundle) {
-          continue;
+          return null;
         }
 
         const sessionBuilder = new SessionBuilder(this.store, address);
@@ -478,16 +482,18 @@ export class OmemoClient {
             }
           });
         } catch (e) {
-          console.log(`Failed processing PreKey[${recipientBareJid}:${preKey.id}]`)
+          console.log(`Failed processing PreKey[${recipientBareJid}:${deviceId}/${preKey.id}]`);
           // Don't add failed session cipher to sessions
-          continue;
+          return null;
         }
       }
 
-      sessions.push(new SessionCipher(this.store, address));
-    }
+      return new SessionCipher(this.store, address);
+    });
 
-    return sessions;
+    const sessions = await Promise.all(fetches);
+
+    return sessions.filter(a => null !== a);
   }
 
   async decryptMessage(message) {

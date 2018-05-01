@@ -15,7 +15,7 @@ export class FossilRoster {
     this.booted = false;
 
     for (const item of this.storage.getRoster()) {
-      this.indexContact(item);
+      this.indexContact(item, true);
     }
 
     this.index();
@@ -41,14 +41,16 @@ export class FossilRoster {
     this.fuse.setCollection(this.getIndexingList());
     this.client.getRoster((err, resp) => {
       if (err) {
-        this.client.getRoster((err, resp) => {
-          if (err) {
-            this.onState();
-            return;
-          }
+        setTimeout(() => {
+          this.client.getRoster((err, resp) => {
+            if (err) {
+              this.onState();
+              return;
+            }
 
-          this.update(resp.roster)
-        });
+            this.update(resp.roster)
+          });
+        }, 5000);
         return;
       }
 
@@ -86,8 +88,24 @@ export class FossilRoster {
     return this.contacts;
   }
 
+  removeContact(jid) {
+    const sureJid = typeof(jid) === 'string' ? new JID(jid) : jid;
+
+    if (sureJid.bare in this.contactsByJid) {
+      this.contactsByJid[sureJid].inRoster = false;
+    }
+
+    this.updateContacts();
+  }
+
   indexContact(item, inRoster = false) {
     const bareJid = typeof(item.jid) === 'string' ? new JID(item.jid) : item.jid;
+
+    if (item.subscription === 'remove') {
+      this.removeContact(bareJid);
+      return;
+    }
+
     const contact = new FossilContact({
       jid: bareJid,
       item,
@@ -100,6 +118,9 @@ export class FossilRoster {
 
     if (bareJid.bare in this.contactsByJid) {
       this.contactsByJid[bareJid.bare].updateItem(item);
+      this.contactsByJid[bareJid.bare].inRoster = inRoster;
+
+      this.updateContacts();
       return;
     }
 
@@ -108,12 +129,15 @@ export class FossilRoster {
     }
 
     this.contacts.push(contact);
+    this.contactsByJid[bareJid.bare] = contact;
+    this.updateContacts();
+  }
 
+  updateContacts() {
     if (this.booted) {
       this.fuse.setCollection(this.getIndexingList());
     }
 
-    this.contactsByJid[bareJid.bare] = contact;
     this.storage.setRoster(
       this.contacts
         .filter(contact => contact.inRoster)
