@@ -21,9 +21,16 @@ export class ContactList extends Component {
     }
 
     return <div className="contact-list">
-        {contacts.map((contact) => <Contact onClick={() => this.handleSelect(contact.jid)}
-                                            active={contact.jid === this.props.active} key={contact.jid}
-                                            contact={contact}/>)}
+      {contacts.length > 0 ?
+        contacts.map((contact) => <Contact onClick={() => this.handleSelect(contact.jid)}
+                                           active={contact.jid === this.props.active} key={contact.jid}
+                                           contact={contact}/>) : (
+          <div className="no-contacts">
+            <span>
+            No contacts{this.props.filter ? ' found' : ''}
+            </span>
+          </div>
+        )}
     </div>
   }
 }

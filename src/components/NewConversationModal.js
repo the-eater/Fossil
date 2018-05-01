@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {FossilModal} from "./FossilModal";
 import {ContactList} from "./ContactList";
 import {JID} from 'stanza.io'
+import FontAwesomeIcon from "@fortawesome/react-fontawesome";
 
 class NewConversationModal extends Component {
   constructor(props) {
@@ -60,7 +61,8 @@ class NewConversationModal extends Component {
       </div>
       { this.state.quickContact && !this.props.fossil.roster.gotContact(this.state.searchValue.trim())
         ? <div onClick={() => this.onQuickContact()} className="quick-add">
-          Contact {new JID(this.state.searchValue).bare}
+          <span className="text">Contact {new JID(this.state.searchValue).bare}</span>
+          <FontAwesomeIcon icon="comment" />
         </div>
         : null
       }

@@ -57,13 +57,20 @@ export class Login extends Component {
       });
     });
 
-    this.fossil.client.once('disconnected', () => {
+    /*this.fossil.client.once('disconnected', () => {
       this.setState({
         errorMessage: `Failed to connect to server: No details known`,
       });
-    });
+    });*/
 
-    this.fossil.client.connect(connectObj);
+    try {
+      this.fossil.client.connect(connectObj);
+    } catch (e) {
+      this.setState({
+        errorMessage: `Failed to connect to server, check your input`
+      });
+    }
+
     this.fossil.jid = new JID(this.username.value);
   }
 

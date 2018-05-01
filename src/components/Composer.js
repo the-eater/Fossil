@@ -26,7 +26,11 @@ export class Composer extends Component {
     this.setState({
       changingEncryptionState: true,
     });
-    await this.chat.toggleOmemo();
+    try {
+      await this.chat.toggleOmemo();
+    } catch (e) {
+      console.log(e);
+    }
     this.setState({
       changingEncryptionState: false,
     });

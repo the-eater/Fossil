@@ -18,7 +18,7 @@ export class ConversationList extends Component {
     return <div className="conversation-list">
       <NewConversationModal ref={a => this.newConvoModal = a} fossil={this.props.fossil}/>
       <div onClick={() => this.newConvoModal.open()} className="new-conversation">
-        <FontAwesomeIcon icon="plus"/> New conversation
+        <span>New conversation...</span>
       </div>
       <div className="conversations">
         {this.props.conversations.map(convo => <ConversationItem conversation={convo}

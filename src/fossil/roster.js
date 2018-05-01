@@ -44,10 +44,12 @@ export class FossilRoster {
         this.client.getRoster((err, resp) => {
           if (err) {
             this.onState();
+            return;
           }
 
           this.update(resp.roster)
         });
+        return;
       }
 
       this.update(resp.roster)

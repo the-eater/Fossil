@@ -23,6 +23,10 @@ export default class Conversation {
     return {};
   }
 
+  getLastMessage() {
+    return null;
+  }
+
   static fromJSON(obj, fossil) {
     switch (obj.type) {
 
@@ -61,6 +65,10 @@ export class ContactConversation extends Conversation {
     return 'contact';
   }
 
+  getDescription() {
+    return this.contact.jid.bare;
+  }
+
   getTitle() {
     return this.contact.getDisplayName();
   }
@@ -75,5 +83,9 @@ export class ContactConversation extends Conversation {
 
   getJSON() {
     return this.contact.jid.bare;
+  }
+
+  getLastMessage() {
+    return this.contact.getLastMessage();
   }
 }

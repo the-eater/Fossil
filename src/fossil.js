@@ -64,12 +64,12 @@ export class Fossil {
     this.client.createOmemo(new FossilOmemoStorage(this.storage.store));
 
     this.client.on('session:started', () => this.boot());
-    this.client.on('chat', (chat) => this.handleChat(chat));
-    this.client.on('carbon:sent', (carbon) => this.handleChat(carbon.carbonSent.forwarded.message));
-    this.client.on('message:sent', (message) => this.handleChat(message));
+    this.client.on('message', (chat) => this.handleMessage(chat));
+    this.client.on('carbon:sent', (carbon) => this.handleMessage(carbon.carbonSent.forwarded.message));
+    this.client.on('message:sent', (message) => this.handleMessage(message));
   }
 
-  handleChat(chat) {
+  handleMessage(chat) {
     let where = chat.to.bare;
 
     if (this.client.jid.bare === where) {

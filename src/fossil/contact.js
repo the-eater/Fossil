@@ -15,6 +15,11 @@ export class FossilContact {
     this.inRoster = inRoster;
   }
 
+  getLastMessage() {
+    let items = this.timeline.getItems();
+    return items[items.length - 1];
+  }
+
   boot() {
     if (this.booted) {
       return;
