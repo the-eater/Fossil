@@ -52,15 +52,6 @@ export class Chat extends Component {
           <div className="jid">{this.contact.jid.bare}</div>
         </div>
       </div>
-      <div className="message-list" ref={(item) => this.messageList = item}>
-        {this.contact.getTimelineItems()
-          .filter((message) => !!message.body)
-          .map((message) => {
-            const messageJid = typeof(message.message.from) === 'string' ? new JID(message.message.from) : message.message.from;
-
-            return <Message isSelf={messageJid.bare === this.props.owner.bare} key={message.id} message={message}/>
-          })}
-      </div>
       { this.contact.inRoster ? null : (
         <div className="roster-management">
           <label>{this.contact.jid.bare} is not in your contact list</label>
@@ -74,6 +65,15 @@ export class Chat extends Component {
           </div>
         </div>
       ) }
+      <div className="message-list" ref={(item) => this.messageList = item}>
+        {this.contact.getTimelineItems()
+          .filter((message) => !!message.body)
+          .map((message) => {
+            const messageJid = typeof(message.message.from) === 'string' ? new JID(message.message.from) : message.message.from;
+
+            return <Message isSelf={messageJid.bare === this.props.owner.bare} key={message.id} message={message}/>
+          })}
+      </div>
       <Composer fossil={this.fossil} chat={this.contact}/>
     </div>
   }
