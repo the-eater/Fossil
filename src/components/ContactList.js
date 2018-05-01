@@ -22,13 +22,7 @@ export class ContactList extends Component {
 
     return <div className="contact-list">
         {contacts.map((contact) => <Contact onClick={() => this.handleSelect(contact.jid)}
-                                            active={contact.jid === this.props.active} key={"1/" + contact.jid}
-                                            contact={contact}/>)}
-        {contacts.map((contact) => <Contact onClick={() => this.handleSelect(contact.jid)}
-                                            active={contact.jid === this.props.active} key={"2/" + contact.jid}
-                                            contact={contact}/>)}
-        {contacts.map((contact) => <Contact onClick={() => this.handleSelect(contact.jid)}
-                                            active={contact.jid === this.props.active} key={"3/" + contact.jid}
+                                            active={contact.jid === this.props.active} key={contact.jid}
                                             contact={contact}/>)}
     </div>
   }
