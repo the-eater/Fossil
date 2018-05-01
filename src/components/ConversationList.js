@@ -1,6 +1,5 @@
 import React, {Component} from 'react'
 import {ConversationItem} from "./ConversationItem";
-import FontAwesomeIcon from "@fortawesome/react-fontawesome";
 import NewConversationModal from "./NewConversationModal";
 
 export class ConversationList extends Component {
