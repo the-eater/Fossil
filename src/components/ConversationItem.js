@@ -14,7 +14,8 @@ export class ConversationItem extends Component {
       <div className="avatar" style={{backgroundImage: `url(${this.props.conversation.getImage()})`}}/>
       <label className="name">{this.props.conversation.getTitle()}</label>
       <span className="last-item">
-        {this.props.conversation.getType() === 'contact' ? (
+        {lastItem ? (
+        this.props.conversation.getType() === 'contact' ? (
           <Fragment>
             {this.props.conversation.contact.jid.bare === new JID(lastItem.message.to).bare ? <span className="user">You: </span> : null}
 
@@ -24,7 +25,7 @@ export class ConversationItem extends Component {
           <Fragment>
 
           </Fragment>
-        )}
+        )) : null}
       </span>
     </div>
   }
