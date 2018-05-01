@@ -37,7 +37,10 @@ export class Chat extends Component {
         <div className="menu-button" onClick={() => this.openContacts()}>
           <FontAwesomeIcon icon="align-justify"/>
         </div>
-        <div className="name">{this.contact.getDisplayName()}</div>
+        <div className="contact-info">
+          <div className="name">{this.contact.getDisplayName()}</div>
+          <div className="jid">{this.contact.jid.bare}</div>
+        </div>
       </div>
       <div className="message-list" ref={(item) => this.messageList = item}>
         {this.contact.getTimelineItems()
@@ -48,7 +51,7 @@ export class Chat extends Component {
             return <Message isSelf={messageJid.bare === this.props.owner.bare} key={message.id} message={message}/>
           })}
       </div>
-      <Composer chat={this.contact}/>
+      <Composer fossil={this.fossil} chat={this.contact}/>
     </div>
   }
 }

@@ -1,9 +1,13 @@
 import React, {Component} from 'react';
 import './App.css';
-import {ContactList} from "./components/ContactList";
 import {Fossil} from "./fossil";
 import {Chat} from "./components/Chat";
 import {Login} from "./components/Login";
+import {ConversationList} from "./components/ConversationList";
+import Modal from 'react-modal';
+
+Modal.setAppElement("#root");
+Modal.portalClassName = "modal-portal";
 
 class App extends Component {
   constructor(props) {
@@ -21,12 +25,19 @@ class App extends Component {
     // this.timeUpdate = setInterval(() => this.setState(this.fossil), 2000);
   }
 
+  activateConversation(convoId) {
+    const [type, id = ""] = convoId.split("/", 2);
+    if (type === 'contact') {
+      this.fossil.activateContact(id);
+    }
+  }
+
   getWindow() {
     if (this.fossil.loggedIn) {
       const ac = this.fossil.activeContact;
       return (
         <div className={"chat-state" + (this.fossil.windowState.seeChat ? ' see-chat' : '')}>
-          <ContactList onSelect={(jid) => this.fossil.activateContact(jid)} roster={this.state.roster}
+          <ConversationList fossil={this.fossil} onSelect={(jid) => this.activateConversation(jid)} conversations={this.state.conversations}
                        active={ac ? ac.jid : null}/>
           <div className="window">
             {ac ? <Chat key={ac.jid.toString()} owner={this.fossil.jid} fossil={this.fossil} contact={ac}/> : null}
@@ -39,8 +50,6 @@ class App extends Component {
   }
 
   render() {
-
-
     return <div className="app">
       {this.getWindow()}
     </div>;

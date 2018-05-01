@@ -26,6 +26,8 @@ export class Fossil {
     this.windowState = {
       seeChat: false,
     };
+
+    this.conversations = [];
   }
 
   get loggedIn() {
@@ -86,7 +88,21 @@ export class Fossil {
   }
 
   findContact(jid) {
+    if (!jid) {
+      return null;
+    }
+
     return this.roster.contacts.find((a) => a.jid.toString() === jid.toString());
+  }
+
+  indexConversation(conversation) {
+    if (conversation.getId() in this.conversationsById) {
+      return;
+    }
+
+    this.conversations.push(conversation);
+    this.conversationsById[conversation.getId()] = conversation;
+    this.storage.setConversations(this.conversations);
   }
 
   start() {
@@ -95,6 +111,13 @@ export class Fossil {
       this.jid = new JID(this.storage.getUser().jid);
       this.client.connect(this.storage.getUser());
     }
+
+    this.conversations = this.storage.getConversations(this);
+    this.conversationsById = this.conversations.reduce((carry, item) => {
+      carry[item.getId()] = item;
+
+      return carry;
+    }, {});
 
     this.activateContact(this.storage.getActiveContact());
   }
@@ -116,7 +139,7 @@ export class Fossil {
   activateContact(jid) {
     this.activeContact = this.findContact(jid);
     this.storage.setActiveContact(jid);
-    this.windowState.seeChat = true;
+    this.windowState.seeChat = !!jid;
     this.onState(this);
   }
 }

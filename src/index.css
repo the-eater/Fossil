@@ -221,3 +221,66 @@ html, #root {
     left: -100%;
   }
 }
+
+.modal-overlay {
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 50px;
+}
+
+.modal-content {
+  min-height: 200px;
+  max-height: 100%;
+  min-width: 200px;
+  max-width: 100%;
+  background-color: #373737;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-body-open, .modal-html-open {
+  overflow: hidden;
+}
+
+.unsafe {
+  color: #d81a21;
+}
+
+.safe {
+  color: darkgreen;
+}
+
+.quick-search > input {
+  width: 330px;
+  background-color: #373737;
+  border: none;
+  font-size: 15px;
+  padding: 10px;
+  color: #e7b647;
+}
+
+.contact-info {
+  display: grid;
+  align-content: center;
+}
+
+.contact-info .jid {
+  font-size: 12px;
+  color:  #7e6427;
+}
+
+.modal-content .contact-list {
+  overflow: auto;
+}
+
+.new-convo-modal {
+  align-self: start;
+}

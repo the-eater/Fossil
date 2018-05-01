@@ -2,7 +2,7 @@ import {FossilTimeline} from "./timeline";
 import * as uuid from 'uuid/v4';
 
 export class FossilContact {
-  constructor({jid, connection, item, onState, storage, owner}) {
+  constructor({jid, connection, item, onState, storage, owner, inRoster = false}) {
     this.storage = storage;
     this.onState = onState;
     this.jid = jid;
@@ -11,6 +11,8 @@ export class FossilContact {
     this.timeline = new FossilTimeline({jid, connection, storage, owner, onState});
     this.booted = false;
     this.omemoEnabled = this.storage.getContactOmemoEnabled(jid);
+    this.omemoAvailable = false;
+    this.inRoster = inRoster;
   }
 
   boot() {
@@ -19,8 +21,17 @@ export class FossilContact {
     }
 
     this.booted = true;
-    this.client.getVCard(this.jid, (err, vcard) => (err || this.setVCard(vcard)));
+    this.fetchOmemoAvailability();
     this.timeline.boot();
+    this.client.getVCard(this.jid, (err, vcard) => (err || this.setVCard(vcard)));
+  }
+
+  async fetchOmemoAvailability() {
+    const ids = await this.client.omemo.getAnnouncedDeviceIds(this.jid.bare);
+
+    this.omemoAvailable = ids.size > 0;
+
+    return this.omemoAvailable;
   }
 
   async send(text) {
@@ -55,11 +66,10 @@ export class FossilContact {
       this.omemoEnabled = false;
       this.storage.setContactOmemoEnabled(this.jid.bare, false);
       this.onState();
+      return;
     }
 
-    const ids = await this.client.omemo.getAnnouncedDeviceIds(this.jid.bare);
-
-    if (ids.size > 0) {
+    if (await this.fetchOmemoAvailability()) {
       this.omemoEnabled = true;
       this.storage.setContactOmemoEnabled(this.jid.bare, true);
       this.onState();

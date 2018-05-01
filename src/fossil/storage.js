@@ -1,4 +1,5 @@
 import {OmemoStorage, OmemoUtils} from "./stanzaio/omemo";
+import Conversation from "./conversation";
 
 export class FossilStorage {
   constructor(storeArray) {
@@ -11,6 +12,17 @@ export class FossilStorage {
 
   getUser() {
     return this.store.get(`user`);
+  }
+
+  setConversations(conversations) {
+    return this.store.set(`conversations`, conversations.map(a => ({
+      type: a.getType(),
+      data: a.getJSON(),
+    })));
+  }
+
+  getConversations(fossil) {
+    return this.store.get(`conversations`, []).map((obj) => Conversation.fromJSON(obj, fossil));
   }
 
   setUser(user) {
@@ -110,7 +122,7 @@ export class FossilOmemoStorage extends OmemoStorage {
   }
 
   async storeWhisper(address, id, whisper) {
-     this.store.set(`whisper/${address}/${id}`, OmemoUtils.arrayBufferToBase64String(whisper));
+    this.store.set(`whisper/${address}/${id}`, OmemoUtils.arrayBufferToBase64String(whisper));
   }
 
   async getWhisper(address, id) {

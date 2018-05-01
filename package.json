@@ -6,17 +6,19 @@
   "dependencies": {
     "@fortawesome/fontawesome": "^1.1.4",
     "@fortawesome/react-fontawesome": "^0.0.17",
+    "fuse.js": "^3.2.0",
     "ltx": "^2.7.1",
     "moment": "^2.20.1",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
+    "react-modal": "^3.4.4",
     "react-scripts": "1.1.1",
     "stanza.io": "^9.0.2",
     "strophejs-plugin-vcard": "^0.0.1"
   },
   "scripts": {
-      "predeploy": "npm run build",
-      "deploy": "gh-pages -d build",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
