@@ -293,7 +293,8 @@ html, #root {
   min-height: inherit;
 }
 
-.new-convo-modal .quick-add {
+.new-convo-modal .quick-add,
+.new-convo-modal .quick-join {
   height: 33px;
   padding: 5px 10px;
   display: flex;
@@ -303,6 +304,7 @@ html, #root {
 }
 
 .new-convo-modal .quick-add:hover,
+.new-convo-modal .quick-join:hover,
 .new-conversation:hover {
   background-color: #555;
   cursor: pointer;
