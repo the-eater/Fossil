@@ -595,7 +595,7 @@ export class OmemoClient {
 
     await window.crypto.getRandomValues(randomSource);
     const gcmKey = randomSource.slice(0, 16);
-    const iv = randomSource.slice(16);
+    const iv = randomSource.slice(12);
 
     const subtleKey = await subtleCrypto.importKey("raw", gcmKey, {name: "AES-GCM"}, false, ['decrypt', 'encrypt']);
     const payload = new TextEncoder().encode(plaintext);
